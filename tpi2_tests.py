@@ -79,7 +79,7 @@ bn.add('car_s',[('c_c',False),('s_t',False),('s_q',True),('f_s',False)],0.031)
 bn.add('car_s',[('c_c',False),('s_t',False),('s_q',False),('f_s',True )],0.034)
 bn.add('car_s',[('c_c',False),('s_t',False),('s_q',False),('f_s',False)],0.023)
 
-# print('Individual probabilities:\n',bn.individual_probabilities(),'\n')
+print('Individual probabilities:\n',bn.individual_probabilities(),'\n')
 
 
 # ----------------------------------------------------------------------
@@ -227,15 +227,14 @@ constraints += [ (edge,lambda auxvar,auxval,var,val : val==auxval[5])
 cs = MyCS(domains,dict(constraints))
 
 import time
-t0 = time.clock()
+t0 = time.process_time() #clock()
 lsols = cs.search_all()
 
 print("TWO+TWO=FOUR all solutions:")
 for s in lsols:
     print([(v,s[v]) for v in ['F','O','R','T','U','W']])
 
-print("Time:",time.clock()-t0)
+print("Time:",time.process_time()-t0) # clock()-t0)
 
 print(len(lsols)," solutions")
-
 
