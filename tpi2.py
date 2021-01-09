@@ -2,11 +2,12 @@
 # https://www.pythoncentral.io/cutting-and-slicing-strings-in-python/
 # https://stackoverflow.com/questions/51115660/modifying-list-of-dictionary-using-list-comprehension
 # https://www.geeksforgeeks.org/string-capitalize-python/
+# https://stackoverflow.com/questions/403421/how-to-sort-a-list-of-objects-based-on-an-attribute-of-the-objects
 
 from semantic_network import *
 from bayes_net import *
 from constraintsearch import *
-
+from collections import Counter
 
 class MyBN(BayesNet):
     def individual_probabilities(self):
@@ -42,7 +43,7 @@ class MySemNet(SemanticNetwork):
         subtypes_rel = { t.entity2 : set() for t in subt_decl}
         [subtypes_rel[t.entity2].add(t.entity1) for t in subt_decl]
 
-        return [ "Qx " + "".join([str(s).capitalize() + "(x) or " for s in sorted(list(subtypes))]).rpartition(" or ")[0] + " => " + str(btype).capitalize() +"(x)" for btype, subtypes in subtypes_rel.items()]
+        return sorted([ "Qx " + "".join([str(s).capitalize() + "(x) or " for s in sorted(list(subtypes))]).rpartition(" or ")[0] + " => " + str(btype).capitalize() +"(x)" for btype, subtypes in subtypes_rel.items()], key=lambda x : x.rpartition(" => ")[2])
 
         # def generate_str(subtypes, btype):
         #     sub = ""
@@ -82,9 +83,13 @@ class MySemNet(SemanticNetwork):
             if isinstance(l.relation, Subtype):
                 return [d.relation.entity2 for d in local]
             if isinstance(l.relation, Association):
-                
-
-            
+                # most common triple
+                mct, _ = Counter([d.relation.assoc_properties() for d in local]).most_common(1)[0]
+                assocs = list(filter(lambda x: x.relation.assoc_properties() in [mct], local))
+                if mct[0] == 'single':
+                    return [Counter([d.relation.entity2 for d in local]).most_common(1)[0][0]]
+                else: # 'multiple'
+                    return sorted(list(set([d.relation.entity2 for d in [dd for sublist in [self.query_inherit(d.relation.entity1, d.relation.name) for d in assocs] for dd in sublist] if d.relation.assoc_properties() in [mct]])))
 
 
 class MyCS(ConstraintSearch):
