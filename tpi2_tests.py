@@ -79,7 +79,7 @@ bn.add('car_s',[('c_c',False),('s_t',False),('s_q',True),('f_s',False)],0.031)
 bn.add('car_s',[('c_c',False),('s_t',False),('s_q',False),('f_s',True )],0.034)
 bn.add('car_s',[('c_c',False),('s_t',False),('s_q',False),('f_s',False)],0.023)
 
-# print('Individual probabilities:\n',bn.individual_probabilities(),'\n')
+print('Individual probabilities:\n',bn.individual_probabilities(),'\n')
 
 
 # ----------------------------------------------------------------------
@@ -147,7 +147,8 @@ query_cases = [ ('socrates','likes'),
                 ('socrates','member'),
                 ('man','subtype'),
                 ('plato','eats'),
-                ('philosopher','subtype') ]
+                ('philosopher','subtype'),
+                ('socrates','eats')]
 
 for (entity,relname) in query_cases:
     print('query('+entity+','+relname+'):\n',z.query(entity,relname))
